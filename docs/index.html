@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ilya Petruhnov — Data Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vendor/map/jquery-jvectormap.css">
+<style>
+  :root{
+    --bg:#0D1216;
+    --surface:#141B20;
+    --surface-2:#1B242A;
+    --border:#26333A;
+    --border-soft:#1E2A30;
+    --text:#EAF0F2;
+    --text-dim:#8FA1AA;
+    --text-faint:#57676F;
+    --amber:#E8A23D;
+    --amber-dim:rgba(232,162,61,0.14);
+    --teal:#46D7B0;
+    --teal-dim:rgba(70,215,176,0.14);
+    --font-display:'Space Grotesk',sans-serif;
+    --font-body:'IBM Plex Sans',sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
+    --maxw:880px;
+    --radius:3px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{color:var(--amber);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--teal);outline-offset:2px;}
+
+  h1,h2,h3{font-family:var(--font-display);font-weight:600;margin:0;color:var(--text);}
+  h1{font-size:2rem;letter-spacing:-0.01em;}
+  h2{font-size:1.05rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--amber);margin:2.5rem 0 1.1rem;}
+  h2:first-of-type{margin-top:0;}
+
+  header.site-header{
+    position:sticky;top:0;z-index:20;
+    background:rgba(13,18,22,0.88);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border-soft);
+  }
+  .header-inner{
+    max-width:var(--maxw);margin:0 auto;padding:1.1rem 1.5rem;
+    display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  }
+  .brand{display:flex;align-items:center;gap:0.7rem;}
+  .brand-mark{
+    width:36px;height:36px;border-radius:50%;
+    border:1.5px solid var(--amber);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-mono);font-size:0.75rem;color:var(--amber);flex-shrink:0;
+  }
+  .brand-text .name{font-family:var(--font-display);font-weight:600;font-size:1.05rem;line-height:1.2;}
+  .brand-text .role{font-family:var(--font-mono);font-size:0.78rem;color:var(--text-dim);}
+
+  nav.tabs{position:relative;display:flex;gap:0.25rem;}
+  nav.tabs button{
+    position:relative;z-index:1;
+    background:none;border:none;color:var(--text-dim);
+    font-family:var(--font-mono);font-size:0.82rem;letter-spacing:0.06em;text-transform:uppercase;
+    padding:0.55rem 0.95rem;cursor:pointer;border-radius:var(--radius);
+    transition:color 0.2s ease;
+  }
+  nav.tabs button:hover{color:var(--text);}
+  nav.tabs button[aria-selected="true"]{color:var(--bg);}
+  .tab-indicator{
+    position:absolute;top:0;bottom:0;left:0;
+    background:var(--amber);border-radius:var(--radius);
+    transition:transform 0.32s cubic-bezier(.4,0,.2,1),width 0.32s cubic-bezier(.4,0,.2,1);
+    z-index:0;
+  }
+
+  .grid-divider{position:relative;height:2px;max-width:100%;background:var(--border-soft);overflow:visible;}
+  .grid-divider .node{
+    position:absolute;top:50%;width:6px;height:6px;border-radius:50%;
+    background:var(--bg);border:1.5px solid var(--text-faint);transform:translate(-50%,-50%);
+  }
+
+  main{max-width:var(--maxw);margin:0 auto;padding:3rem 1.5rem 5rem;}
+  .panel{display:none;}
+  .panel.active{display:block;animation:fadeIn 0.35s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+  @media (prefers-reduced-motion: reduce){.panel.active{animation:none;}}
+
+  .lede{color:var(--text-dim);font-size:1.05rem;max-width:60ch;margin-top:0.6rem;}
+  .lede-small{color:var(--text-dim);font-size:0.95rem;max-width:60ch;}
+
+  .cv-header .role{font-family:var(--font-mono);color:var(--amber);font-size:0.95rem;margin-top:0.4rem;}
+  .contact-row{margin-top:0.9rem;font-family:var(--font-mono);font-size:0.85rem;color:var(--text-dim);}
+  .contact-row a{color:var(--text-dim);}
+  .contact-row a:hover{color:var(--amber);}
+  .contact-row .sep{margin:0 0.5rem;color:var(--text-faint);}
+  .summary{color:var(--text-dim);max-width:65ch;margin-top:1.4rem;}
+
+  .timeline{list-style:none;margin:0;padding:0;}
+  .timeline li{position:relative;padding:0 0 1.8rem 1.6rem;border-left:1px solid var(--border);}
+  .timeline li:last-child{border-left:1px solid transparent;padding-bottom:0;}
+  .timeline-node{
+    position:absolute;left:-5px;top:0.35rem;width:9px;height:9px;border-radius:50%;
+    background:var(--bg);border:2px solid var(--amber);
+  }
+  .timeline-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:0.5rem;margin-bottom:0.5rem;}
+  .timeline-head strong{font-family:var(--font-display);font-size:1.02rem;font-weight:600;}
+  .timeline-org{font-family:var(--font-mono);color:var(--teal);font-size:0.88rem;}
+  .timeline-date{font-family:var(--font-mono);color:var(--text-faint);font-size:0.8rem;margin-left:auto;}
+  .timeline-content ul{margin:0.4rem 0 0;padding-left:1.1rem;color:var(--text-dim);}
+  .timeline-content li{border:none;padding:0.15rem 0;}
+  .timeline-content li::marker{color:var(--text-faint);}
+
+  .chip-row{display:flex;flex-wrap:wrap;gap:0.5rem;}
+  .chip{
+    font-family:var(--font-mono);font-size:0.8rem;color:var(--text-dim);
+    border:1px solid var(--border);border-radius:20px;padding:0.32rem 0.85rem;
+    background:var(--surface);
+  }
+
+  .edu-item{color:var(--text-dim);}
+  .edu-item strong{color:var(--text);font-family:var(--font-display);font-weight:600;}
+
+  .btn-primary{
+    display:inline-block;margin-top:2rem;
+    font-family:var(--font-mono);font-size:0.85rem;letter-spacing:0.04em;
+    background:var(--amber);color:#241705;padding:0.75rem 1.4rem;border-radius:var(--radius);
+    text-decoration:none;transition:opacity 0.2s ease;
+  }
+  .btn-primary:hover{opacity:0.85;text-decoration:none;}
+
+  .life-text{color:var(--text-dim);max-width:68ch;margin:0.55rem 0 0.9rem;}
+  .life-list{margin:0.3rem 0 0;padding-left:1.1rem;color:var(--text-dim);}
+  .life-list li{margin:0.25rem 0;}
+  .life-list li::marker{color:var(--text-faint);}
+  .sport-card{
+    margin-top:0.65rem;
+    background:linear-gradient(145deg,var(--surface),#162026);
+    border:1px solid var(--border-soft);
+    border-left:3px solid var(--amber);
+    border-radius:8px;
+    padding:1rem 1.1rem;
+  }
+  .sport-card p{color:var(--text-dim);margin:0;}
+  .sport-card p + p{margin-top:0.85rem;}
+  .lang-card{margin-top:0.65rem;}
+  .lang-intro{color:var(--text-dim);margin:0;}
+  .lang-list{list-style:none;margin:0.95rem 0 0;padding:0;display:grid;gap:0.6rem;}
+  .lang-item{
+    display:grid;
+    grid-template-columns:minmax(140px,220px) 1fr;
+    gap:0.75rem;
+    align-items:start;
+    border-top:1px solid var(--border-soft);
+    padding-top:0.6rem;
+  }
+  .lang-item:first-child{border-top:0;padding-top:0;}
+  .lang-title{font-family:var(--font-display);font-weight:600;color:var(--text);}
+  .lang-level{color:var(--text-dim);margin:0;}
+  @media (max-width:700px){
+    .lang-item{grid-template-columns:1fr;gap:0.25rem;}
+  }
+
+  .map-wrap{
+    background:var(--surface);border:1px solid var(--border-soft);border-radius:6px;
+    padding:1rem;margin-top:1.2rem;
+  }
+  #worldMap{width:100%;height:420px;background:#0F161B;border:1px solid var(--border-soft);}
+  .jvectormap-container{background:#0F161B !important;}
+  .jvectormap-zoomin,
+  .jvectormap-zoomout{
+    background:var(--surface-2);border:1px solid var(--border);color:var(--text-dim);
+    width:22px;height:22px;line-height:20px;border-radius:var(--radius);
+  }
+  .jvectormap-zoomin:hover,
+  .jvectormap-zoomout:hover{color:var(--text);border-color:var(--teal);}
+  .jvectormap-tip{background:#0F161B;border:1px solid var(--border);color:var(--text);font-family:var(--font-mono);font-size:0.78rem;}
+
+  .project-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.1rem;}
+  .project-card{
+    background:var(--surface);border:1px solid var(--border-soft);border-radius:6px;
+    padding:1.3rem 1.4rem;display:flex;flex-direction:column;gap:0.7rem;
+  }
+  .project-card h3{font-size:1.05rem;}
+  .project-card p{color:var(--text-dim);font-size:0.9rem;margin:0;flex-grow:1;}
+  .project-tags{display:flex;flex-wrap:wrap;gap:0.4rem;}
+  .project-tags span{
+    font-family:var(--font-mono);font-size:0.72rem;color:var(--teal);
+    background:var(--teal-dim);padding:0.2rem 0.55rem;border-radius:20px;
+  }
+  .project-card .plink{font-family:var(--font-mono);font-size:0.82rem;}
+
+  footer{
+    max-width:var(--maxw);margin:0 auto;padding:2rem 1.5rem 3rem;
+    border-top:1px solid var(--border-soft);
+    font-family:var(--font-mono);font-size:0.78rem;color:var(--text-faint);
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;
+  }
+
+  @media (max-width:640px){
+    .header-inner{flex-direction:column;align-items:flex-start;}
+    nav.tabs{width:100%;}
+    nav.tabs button{flex:1;text-align:center;padding:0.55rem 0.4rem;}
+    h1{font-size:1.6rem;}
+    .timeline-date{margin-left:0;}
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-mark">IP</div>
+      <div class="brand-text">
+        <div class="name">Ilya Petruhnov</div>
+        <div class="role">Data Engineer · E.ON</div>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Site sections">
+      <div class="tab-indicator" id="tabIndicator"></div>
+      <button role="tab" aria-selected="true" aria-controls="panel-cv" id="tab-cv">CV</button>
+      <button role="tab" aria-selected="false" aria-controls="panel-life" id="tab-life">Life</button>
+      <button role="tab" aria-selected="false" aria-controls="panel-projects" id="tab-projects">Projects</button>
+    </nav>
+  </div>
+  <div class="grid-divider" aria-hidden="true">
+    <div class="node" style="left:6%"></div>
+    <div class="node" style="left:24%"></div>
+    <div class="node" style="left:42%"></div>
+    <div class="node" style="left:60%"></div>
+    <div class="node" style="left:78%"></div>
+    <div class="node" style="left:94%"></div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ===================== CV ===================== -->
+  <section class="panel active" id="panel-cv" role="tabpanel" aria-labelledby="tab-cv" tabindex="0">
+    <h1>Curriculum Vitae</h1>
+    <p class="summary">My CV is available here: <a href="CV.pdf" target="_blank" rel="noopener">Curriculum Vitae</a>.</p>
+  </section>
+
+  <!-- ===================== LIFE ===================== -->
+  <section class="panel" id="panel-life" role="tabpanel" aria-labelledby="tab-life" tabindex="0">
+    <h1>Life</h1>
+    <p class="lede">A collection of thoughts, experiences, and insights on topics that interest me. This space grows gradually as I learn, explore new ideas, and reflect on things worth sharing. It is an ongoing work in progress.</p>
+
+    <h2>Sport</h2>
+    <div class="sport-card">
+      <p>Sports have always been a defining part of my life. I spent over 15 years training in kickboxing and competed in numerous Muay Thai and K-1 tournaments, experiences that taught me discipline, resilience, and the value of continuous improvement.</p>
+      <p>Today, I stay active through calisthenics and yoga, combining strength, mobility, and balance in my training. In winter, you will usually find me skiing in the mountains, where I enjoy both the challenge and the chance to disconnect and recharge.</p>
+    </div>
+
+    <h2>Music</h2>
+    <div class="sport-card">
+      <p>Music has always been an important part of my life. I learned to play the saxophone during my school years and later taught myself the guitar while studying at university. Some of my favorite memories are spending evenings in the dormitory kitchen, playing guitar and singing together with friends.</p>
+      <p>Today, I enjoy listening to a wide range of music, with a particular passion for electronic music. I am also planning to learn DJing to better understand the creative process behind mixing tracks and creating memorable experiences through music.</p>
+    </div>
+
+    <h2>Languages</h2>
+    <p class="lang-intro">I believe learning languages never really ends. I enjoy continuously improving my skills and discovering new cultures through communication.</p>
+    <div class="sport-card lang-card">
+      <ul class="lang-list">
+        <li class="lang-item">
+          <span class="lang-title">Russian, Belarusian</span>
+          <p class="lang-level">Native languages</p>
+        </li>
+        <li class="lang-item">
+          <span class="lang-title">English, German</span>
+          <p class="lang-level">Primary languages for work and communication</p>
+        </li>
+        <li class="lang-item">
+          <span class="lang-title">Spanish</span>
+          <p class="lang-level">Currently learning at a basic conversational level</p>
+        </li>
+      </ul>
+    </div>
+
+    <h2>Travel Map</h2>
+    <p class="lede-small">This map gives an overview of the countries I've visited - 33 in total so far!</p>
+    <div class="map-wrap">
+      <div id="worldMap"></div>
+    </div>
+  </section>
+
+  <!-- ===================== PROJECTS ===================== -->
+  <section class="panel" id="panel-projects" role="tabpanel" aria-labelledby="tab-projects" tabindex="0">
+    <h1>Projects</h1>
+    <p class="lede">in progess</p>
+  </section>
+
+</main>
+
+<footer>
+  <span>Ilya Petruhnov</span>
+  <span>petruhnov.me</span>
+</footer>
+
+<script>
+  const tabs = document.querySelectorAll('nav.tabs button');
+  const panels = document.querySelectorAll('.panel');
+  const indicator = document.getElementById('tabIndicator');
+
+  function moveIndicator(btn){
+    indicator.style.width = btn.offsetWidth + 'px';
+    indicator.style.transform = 'translateX(' + btn.offsetLeft + 'px)';
+  }
+
+  function selectTab(id){
+    tabs.forEach(t => {
+      const active = t.id === id;
+      t.setAttribute('aria-selected', active);
+      if(active) moveIndicator(t);
+    });
+    panels.forEach(p => p.classList.toggle('active', p.id === 'panel-' + id.replace('tab-','')));
+  }
+
+  tabs.forEach(t => t.addEventListener('click', () => selectTab(t.id)));
+  window.addEventListener('resize', () => {
+    const current = document.querySelector('nav.tabs button[aria-selected="true"]');
+    if(current) moveIndicator(current);
+  });
+  window.addEventListener('load', () => moveIndicator(document.getElementById('tab-cv')));
+</script>
+
+<!-- Travel map: jQuery + jVectorMap world-mill (same stack as bachfischer.me) -->
+<script src="vendor/map/jquery-3.7.1.min.js"></script>
+<script src="vendor/map/jquery-jvectormap-2.0.5.min.js"></script>
+<script src="vendor/map/jquery-jvectormap-world-mill.js"></script>
+<script>
+  const VISITED_NAMES = ["Germany", "Italy", "France", "Spain", "Portugal", "United Kingdom", "Netherlands", "Belgium", "Switzerland", "Austria", "Czech Rep.", "Slovakia", "Hungary", "Romania", "Serbia", "Croatia", "Slovenia", "Greece", "Turkey", "Lithuania", "Latvia", "Sweden", "Denmark", "Iceland", "Poland", "Belarus", "Russia", "Ukraine", "Azerbaijan", "United States", "Mexico", "Peru", "Egypt"];
+
+  function normalizeCountryName(name){
+    return String(name || '').trim().toLowerCase().replace(/\s+/g, ' ');
+  }
+
+  const MAP_NAME_ALIASES = {
+    'united states of america': 'united states',
+    'russian federation': 'russia',
+    'korea': 'south korea',
+    'czech republic': 'czechia',
+    'viet nam': 'vietnam',
+    'syrian arab republic': 'syria',
+    'iran, islamic republic of': 'iran',
+    'lao pdr': 'laos'
+  };
+
+  let mapInitialized = false;
+
+  function drawMap(){
+    if(mapInitialized) return;
+    const container = document.getElementById('worldMap');
+    if(!container) return;
+    if(container.offsetWidth === 0 || container.offsetHeight === 0){
+      return;
+    }
+    const visitedSet = new Set(VISITED_NAMES.map(normalizeCountryName));
+
+    if(!(window.jvm && jvm.Map && jvm.Map.maps && (jvm.Map.maps.world_mill_en || jvm.Map.maps.world_mill))){
+      container.innerHTML = '<p style="color:#8FA1AA;font-family:\'IBM Plex Mono\',monospace;font-size:0.85rem;margin:0;">Map data failed to load.</p>';
+      return;
+    }
+
+    function isVisited(mapRegionName){
+      const normalized = normalizeCountryName(mapRegionName);
+      const aliased = MAP_NAME_ALIASES[normalized] || normalized;
+      return visitedSet.has(normalized) || visitedSet.has(aliased);
+    }
+
+    const mapName = (window.jvm && jvm.Map && jvm.Map.maps && jvm.Map.maps.world_mill_en)
+      ? 'world_mill_en'
+      : 'world_mill';
+
+    $('#worldMap').vectorMap({
+      map: mapName,
+      zoomOnScroll: true,
+      zoomButtons: true,
+      backgroundColor: '#0F161B',
+      series: {
+        regions: [{
+          attribute: 'fill',
+          values: {}
+        }]
+      },
+      regionStyle: {
+        initial: {
+          fill: '#1B242A',
+          'fill-opacity': 1,
+          stroke: '#26333A',
+          'stroke-width': 0.5,
+          'stroke-opacity': 1
+        },
+        hover: {
+          'fill-opacity': 0.9,
+          cursor: 'pointer'
+        }
+      }
+    });
+
+    mapInitialized = true;
+
+    const mapObj = $('#worldMap').vectorMap('get', 'mapObject');
+    const visitedValues = {};
+
+    Object.keys(mapObj.regions).forEach((code) => {
+      const regionName = mapObj.getRegionName(code);
+      visitedValues[code] = isVisited(regionName) ? '#E8A23D' : '#1B242A';
+    });
+
+    mapObj.series.regions[0].setValues(visitedValues);
+
+    const mapPanel = document.getElementById('panel-life');
+    if(mapPanel){
+      mapPanel.setAttribute('data-map-ready', 'true');
+    }
+  }
+
+  drawMap();
+  const lifeTab = document.getElementById('tab-life');
+  if(lifeTab){
+    lifeTab.addEventListener('click', () => {
+      setTimeout(drawMap, 0);
+    });
+  }
+</script>
+
+</body>
+</html>
