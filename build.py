@@ -23,7 +23,7 @@ OUTPUT_DIR = HERE / "output"
 OUTPUT_PATH = OUTPUT_DIR / "index.html"
 VENDOR_MAP_SRC_DIR = HERE / "vendor" / "map"
 VENDOR_MAP_OUT_DIR = OUTPUT_DIR / "vendor" / "map"
-CV_PATH = HERE / "CV.pdf"
+CV_PATH = HERE / "files/CV.pdf"
 CV_OUTPUT_PATH = OUTPUT_DIR / "CV.pdf"
 
 
